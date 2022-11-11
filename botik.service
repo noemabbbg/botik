@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram Bot
+After=network.target
+
+[Service]
+User=root
+Group=root
+
+WorkingDirectory=/home/bots/botik/
+Environment="PYTHONPATH=/home/bots/botik/"
+ExecStart=/home/bots/mongobotvenv/bin/python  /home/bots/botik/bot.py
+
+[Install]
+WantedBy=multi-user.target
