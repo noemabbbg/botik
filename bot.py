@@ -305,9 +305,9 @@ async def try1(message: types.message):
         manhwa_name = call.data 
         user_id = call.from_user.id
         df.selected_manhwa(manhwa_name, user_id)
-        await call.bot.send_message(call.from_user.id, text = f'ты попал в калбек {call.data}')
+        #await call.bot.send_message(call.from_user.id, text = f'ты попал в калбек {call.data}')
         await bot.send_photo(call.from_user.id, 
-        caption=f'*Описание: *{df.get_description(call.data)[0]}  \n*Количество глав: * {df.get_number_of_chap(call.data)}  \n*Год выпуска* {df.get_release_year(call.data)}  \n*Статус тайтла:* {df.get_manhwa_state(call.data)}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
+        caption=f'*Описание: *{df.get_description(call.data)[0]}  \n*Количество глав: * {df.get_number_of_chap(call.data)}  \n*Год выпуска:* {df.get_release_year(call.data)} \n*Жанры:* {df.get_manhwa_genres(call.data)} \n*Статус Тайтла: * {df.get_manhwa_state(call.data)}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
     await bot.send_message(message.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup = start_kb.keyboard)
 
 @dp.callback_query_handler(text ='genres_list')
@@ -345,12 +345,13 @@ async def start_reading(call: CallbackQuery):
   df.update_selected_chapter(call.from_user.id, 1)
   await call.bot.send_document(call.from_user.id, document=df.get_chapters(manhwa_name, 1)[0], reply_markup=kb.next_chapterKB) 
 # клаву с менюшкой + калбек на выдачу глав сделать
-
-
+back_to_main_menu = InlineKeyboardMarkup(row_width=1)
+back_to_menu = InlineKeyboardButton(text = 'вернуться в меню', callback_data='back_to_main_menu')
+back_to_main_menu.insert(back_to_menu)
 @dp.callback_query_handler(text = 'start_modify_read')
 async def start_reading(call: CallbackQuery):
   manhwa_name = df.get_selected_manhwa(call.from_user.id)
-  await call.bot.send_message(call.from_user.id, text = 'Напиши номер главы')
+  await call.bot.send_message(call.from_user.id, text = 'Напиши номер главы', reply_markup=back_to_main_menu)
   @dp.message_handler()
   async def change_chapter(message: types.Message):
     try: 
