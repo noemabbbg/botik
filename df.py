@@ -250,14 +250,18 @@ def get_number_of_chap(manhwa_name):
     photo_new = str(photo).replace('{', '').replace('}', '').replace("'", '').replace(":", '').replace("number_of_chapters", '').replace(" ", '')
     return photo_new
 
-def get_release_year(manhwa_name):
+def get_manhwa_genres(manhwa_name):
     manhwa_data = db['manhwa']
     photo =  list(manhwa_data.find({'name': manhwa_name }))
-    return [user['release_year'] for user in photo]
+    return [user['genres'] for user in photo]
     photo =  manhwa_data.find_one({'name': manhwa_name }, {'release_year':1, '_id':0})
     photo_new = str(photo).replace('{', '').replace('}', '').replace("'", '').replace(":", '').replace("release_year", '').replace(" ", '')
     return photo_new
 
+def get_release_year(manhwa_name):
+    manhwa_data = db['manhwa']
+    photo =  list(manhwa_data.find({'name': manhwa_name }))
+    return [user['release_year'] for user in photo]
 
 def get_manhwa_state(manhwa_name):
     manhwa_data = db['manhwa']
