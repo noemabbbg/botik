@@ -311,7 +311,7 @@ async def try1(message: types.message):
         #await call.bot.send_message(call.from_user.id, text = f'ты попал в калбек {call.data}')
         await bot.delete_message(call.from_user.id, call.message.message_id)
         await bot.send_photo(call.from_user.id, 
-        caption=f'*Описание: *{df.get_description(call.data)[0]}  \n*Количество глав: * {df.get_number_of_chap(call.data)}  \n*Год выпуска:* {df.get_release_year(call.data)} \n*Жанры:* {df.get_manhwa_genres(call.data)} \n*Статус Тайтла: * {df.get_manhwa_state(call.data)}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
+        caption=f'*Описание: *{df.get_description(call.data)[0]} \n \n*Количество глав: * {df.get_number_of_chap(call.data)}  \n*Год выпуска:* {df.get_release_year(call.data)} \n\n*Жанры:* {df.get_manhwa_genres(call.data)} \n*Статус Тайтла: * {df.get_manhwa_state(call.data)}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
     await bot.send_message(message.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup = start_kb.keyboard)
 
 @dp.callback_query_handler(text ='genres_list')
