@@ -277,7 +277,7 @@ async def try1(message: types.message):
     @dp.callback_query_handler(text ='all_titles_button')
     async def genres_list(call: CallbackQuery):
         manhwa_list = df.available_manhwa()
-        back_to_main_menu = InlineKeyboardButton(text = 'вернуться в меню', callback_data='back_to_main_menu')
+        back_to_main_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
         manhwa_kb.manhwa_list_keyboard = InlineKeyboardMarkup(row_width=1)
         
         i = 0 
@@ -286,16 +286,19 @@ async def try1(message: types.message):
             manhwa_kb.manhwa_list_keyboard.insert(button)
             i+=1
         manhwa_kb.manhwa_list_keyboard.insert(back_to_main_menu)
+        await bot.delete_message(call.from_user.id, call.message.message_id)
         await bot.send_message(call.from_user.id, text = 'все загруженные комиксы и манги', reply_markup=manhwa_kb.manhwa_list_keyboard)
 
 
     @dp.callback_query_handler(text ='back_to_titles_list')
     async def back_to_titles_list(call: CallbackQuery):
+         await bot.delete_message(call.from_user.id, call.message.message_id)
          await bot.send_message(call.from_user.id, text = 'все загруженные комиксы и манги', reply_markup=manhwa_kb.manhwa_list_keyboard)
 
 
     @dp.callback_query_handler(text ='back_to_main_menu')
     async def back_to_main_menu(call: CallbackQuery):
+        await bot.delete_message(call.from_user.id, call.message.message_id)
         await bot.send_message(call.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup=start_kb.keyboard)
 
 
@@ -306,6 +309,7 @@ async def try1(message: types.message):
         user_id = call.from_user.id
         df.selected_manhwa(manhwa_name, user_id)
         #await call.bot.send_message(call.from_user.id, text = f'ты попал в калбек {call.data}')
+        await bot.delete_message(call.from_user.id, call.message.message_id)
         await bot.send_photo(call.from_user.id, 
         caption=f'*Описание: *{df.get_description(call.data)[0]}  \n*Количество глав: * {df.get_number_of_chap(call.data)}  \n*Год выпуска:* {df.get_release_year(call.data)} \n*Жанры:* {df.get_manhwa_genres(call.data)} \n*Статус Тайтла: * {df.get_manhwa_state(call.data)}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
     await bot.send_message(message.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup = start_kb.keyboard)
@@ -313,7 +317,7 @@ async def try1(message: types.message):
 @dp.callback_query_handler(text ='genres_list')
 async def genres_list(call: CallbackQuery):
     genres_list = df.available_genres()
-    back_to_main_menu = InlineKeyboardButton(text = 'вернуться в меню', callback_data='back_to_main_menu')
+    back_to_main_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
     
     genre_kb.genres_list_keyboard = InlineKeyboardMarkup(row_width=1)
     i = 0 
@@ -322,6 +326,7 @@ async def genres_list(call: CallbackQuery):
         genre_kb.genres_list_keyboard.insert(button)
         i+=1
     genre_kb.genres_list_keyboard.insert(back_to_main_menu)
+    await bot.delete_message(call.from_user.id, call.message.message_id)
     await bot.send_message(call.from_user.id, text = 'доступные жанры', reply_markup=genre_kb.genres_list_keyboard)
 
 
@@ -335,18 +340,22 @@ async def genres_list(call: CallbackQuery):
             button =  InlineKeyboardButton(text = accepted_manhwa[i], callback_data = accepted_manhwa[i])
             manhwa_in_genre.insert(button)
             i+=1
-        back_to_main_menu = InlineKeyboardButton(text = 'вернуться в меню', callback_data='back_to_main_menu')
+        back_to_main_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
         manhwa_in_genre.insert(back_to_main_menu)
-        await bot.send_message(call.from_user.id, text = 'из шага в жанры переход в тайтл ', reply_markup=manhwa_in_genre)
+        await bot.delete_message(call.from_user.id, call.message.message_id)
+        await bot.send_message(call.from_user.id, text = 'доступные тайтлы: / ', reply_markup=manhwa_in_genre)
 
 @dp.callback_query_handler(text = 'start_read')
 async def start_reading(call: CallbackQuery):
   manhwa_name = df.get_selected_manhwa(call.from_user.id)
   df.update_selected_chapter(call.from_user.id, 1)
-  await call.bot.send_document(call.from_user.id, document=df.get_chapters(manhwa_name, 1)[0], reply_markup=kb.next_chapterKB) 
+  try:
+    await call.bot.send_document(call.from_user.id, document=df.get_chapters(manhwa_name, 1)[0], reply_markup=kb.next_chapterKB) 
+  except:
+    await call.bot.send_message(call.from_user.id, text = 'кажется главы еще не добавлены😪', reply_markup=back_to_main_menu)
 # клаву с менюшкой + калбек на выдачу глав сделать
 back_to_main_menu = InlineKeyboardMarkup(row_width=1)
-back_to_menu = InlineKeyboardButton(text = 'вернуться в меню', callback_data='back_to_main_menu')
+back_to_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
 back_to_main_menu.insert(back_to_menu)
 @dp.callback_query_handler(text = 'start_modify_read')
 async def start_reading(call: CallbackQuery):
