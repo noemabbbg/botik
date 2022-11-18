@@ -357,22 +357,32 @@ async def start_reading(call: CallbackQuery):
 back_to_main_menu = InlineKeyboardMarkup(row_width=1)
 back_to_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
 back_to_main_menu.insert(back_to_menu)
+
+
+
+
+
+
+
 @dp.callback_query_handler(text = 'start_modify_read')
 async def start_reading(call: CallbackQuery):
   manhwa_name = df.get_selected_manhwa(call.from_user.id)
-  await call.bot.send_message(call.from_user.id, text = 'Напиши номер главы', reply_markup=back_to_main_menu)
+  await call.bot.send_message(call.from_user.id, text = f'Напиши номер главы', reply_markup=back_to_main_menu)
+  
   @dp.message_handler()
   async def change_chapter(message: types.Message):
-    try: 
-        new_chapter = int(message.text)
-    except: 
-        await  call.bot.send_message(call.from_user.id, text = 'главу не удалось найти, попробуй снова')
-    df.update_selected_chapter(call.from_user.id, new_chapter)
-    new_chapter = int((df.selected_chapter(call.from_user.id))[0])
-    try: 
-        await call.bot.send_document(call.from_user.id, document=df.get_chapters(manhwa_name, new_chapter)[0], reply_markup=kb.next_chapterKB) 
-    except: 
-        await  call.bot.send_message(call.from_user.id, text = 'главу не удалось найти, попробуй снова')
+    manhwa_name = df.get_selected_manhwa(message.from_user.id)
+   #try: 
+    new_chapter = int(message.text)
+    #except: 
+        #await  call.bot.send_message(message.from_user.id, text = 'главу не удалось найти, попробуй снова')
+    df.update_selected_chapter(message.from_user.id, new_chapter)
+    new_chapter = int((df.selected_chapter(message.from_user.id))[0])
+    #try: 
+    print(message.from_user.id)
+    await call.bot.send_document(message.from_user.id, document=df.get_chapters(manhwa_name, new_chapter)[0], reply_markup=kb.next_chapterKB) 
+    #except: 
+        #await call.bot.send_message(message.from_user.id, text = 'главу не удалось найти, попробуй снова')
 
 
 
